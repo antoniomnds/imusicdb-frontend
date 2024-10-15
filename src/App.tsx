@@ -13,7 +13,8 @@ interface User {
 
 function getParameterFromFragment(param: string) {
   const hash = window.location.hash;
-  const params = new URLSearchParams(hash.substring(1))
+  const params = new URLSearchParams(hash.substring(1));
+  window.history.replaceState(null, null, window.location.pathname);
   return params.get(param);
 }
 
