@@ -1,4 +1,5 @@
 import queryString from "query-string";
+import isEmpty from "lodash/isEmpty";
 
 const AUTH_STORAGE_KEY = "access_token";
 
@@ -54,9 +55,7 @@ const isAbsoluteUrl = (pathname: string) => {
     return isAbsoluteUrlRegex.test(pathname);
 }
 
-const isEmpty = (val: Record<string, unknown> | null | undefined) =>
-    val == null || !(Object.keys(val) || val).length;
-
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const stringifyQueryParams = (params: Record<string, any>) => queryString.stringify(params)
 const getFullApiUrl = ({
     endpoint,

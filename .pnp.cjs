@@ -28,6 +28,7 @@ const RAW_RUNTIME_STATE =
         "packageLocation": "./",\
         "packageDependencies": [\
           ["@eslint/js", "npm:9.12.0"],\
+          ["@types/lodash", "npm:4.17.10"],\
           ["@types/react", "npm:18.3.11"],\
           ["@types/react-dom", "npm:18.3.1"],\
           ["@vitejs/plugin-react", "virtual:b8faaf94354ba3a0efda95284b16d22bf9d6ca415790ce107f082a86ebbb6a58db86ad7821bec873ba248a45a0704d0fdc340899e8ceb689c8bb3d0e2b761c6e#npm:4.3.2"],\
@@ -37,6 +38,7 @@ const RAW_RUNTIME_STATE =
           ["eslint-plugin-react-refresh", "virtual:b8faaf94354ba3a0efda95284b16d22bf9d6ca415790ce107f082a86ebbb6a58db86ad7821bec873ba248a45a0704d0fdc340899e8ceb689c8bb3d0e2b761c6e#npm:0.4.12"],\
           ["globals", "npm:15.11.0"],\
           ["js-cookie", "npm:3.0.5"],\
+          ["lodash", "npm:4.17.21"],\
           ["query-string", "npm:9.1.1"],\
           ["react", "npm:18.3.1"],\
           ["react-dom", "virtual:b8faaf94354ba3a0efda95284b16d22bf9d6ca415790ce107f082a86ebbb6a58db86ad7821bec873ba248a45a0704d0fdc340899e8ceb689c8bb3d0e2b761c6e#npm:18.3.1"],\
@@ -1042,6 +1044,15 @@ const RAW_RUNTIME_STATE =
         "packageLocation": "../../.yarn/berry/cache/@types-json-schema-npm-7.0.15-fd16381786-10c0.zip/node_modules/@types/json-schema/",\
         "packageDependencies": [\
           ["@types/json-schema", "npm:7.0.15"]\
+        ],\
+        "linkType": "HARD"\
+      }]\
+    ]],\
+    ["@types/lodash", [\
+      ["npm:4.17.10", {\
+        "packageLocation": "../../.yarn/berry/cache/@types-lodash-npm-4.17.10-033d752d27-10c0.zip/node_modules/@types/lodash/",\
+        "packageDependencies": [\
+          ["@types/lodash", "npm:4.17.10"]\
         ],\
         "linkType": "HARD"\
       }]\
@@ -2814,6 +2825,7 @@ const RAW_RUNTIME_STATE =
         "packageDependencies": [\
           ["imudb-frontend", "workspace:."],\
           ["@eslint/js", "npm:9.12.0"],\
+          ["@types/lodash", "npm:4.17.10"],\
           ["@types/react", "npm:18.3.11"],\
           ["@types/react-dom", "npm:18.3.1"],\
           ["@vitejs/plugin-react", "virtual:b8faaf94354ba3a0efda95284b16d22bf9d6ca415790ce107f082a86ebbb6a58db86ad7821bec873ba248a45a0704d0fdc340899e8ceb689c8bb3d0e2b761c6e#npm:4.3.2"],\
@@ -2823,6 +2835,7 @@ const RAW_RUNTIME_STATE =
           ["eslint-plugin-react-refresh", "virtual:b8faaf94354ba3a0efda95284b16d22bf9d6ca415790ce107f082a86ebbb6a58db86ad7821bec873ba248a45a0704d0fdc340899e8ceb689c8bb3d0e2b761c6e#npm:0.4.12"],\
           ["globals", "npm:15.11.0"],\
           ["js-cookie", "npm:3.0.5"],\
+          ["lodash", "npm:4.17.21"],\
           ["query-string", "npm:9.1.1"],\
           ["react", "npm:18.3.1"],\
           ["react-dom", "virtual:b8faaf94354ba3a0efda95284b16d22bf9d6ca415790ce107f082a86ebbb6a58db86ad7821bec873ba248a45a0704d0fdc340899e8ceb689c8bb3d0e2b761c6e#npm:18.3.1"],\
@@ -3312,6 +3325,15 @@ const RAW_RUNTIME_STATE =
         "packageDependencies": [\
           ["locate-path", "npm:6.0.0"],\
           ["p-locate", "npm:5.0.0"]\
+        ],\
+        "linkType": "HARD"\
+      }]\
+    ]],\
+    ["lodash", [\
+      ["npm:4.17.21", {\
+        "packageLocation": "../../.yarn/berry/cache/lodash-npm-4.17.21-6382451519-10c0.zip/node_modules/lodash/",\
+        "packageDependencies": [\
+          ["lodash", "npm:4.17.21"]\
         ],\
         "linkType": "HARD"\
       }]\
