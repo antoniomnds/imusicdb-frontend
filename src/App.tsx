@@ -14,7 +14,7 @@ interface User {
 function getParameterFromFragment(param: string) {
   const hash = window.location.hash;
   const params = new URLSearchParams(hash.substring(1));
-  window.history.replaceState(null, null, window.location.pathname);
+  window.history.replaceState(null, "", window.location.pathname);
   return params.get(param);
 }
 
@@ -23,9 +23,11 @@ function Nav() {
 
   const getUserInfo = useCallback(async () => {
     const response = await API.GetUser();
-    if (response.success) {
-      const userData: User = JSON.parse(response.result.data);
+    if (response.success && response.result.data) {
+      const userData: User = JSON.parse(response.result.data) as User;
       setUser(userData);
+    } else {
+      alert(response.result.errors);
     }
   }, []);
 
@@ -40,8 +42,8 @@ function Nav() {
     <>
       <p> Welcome, { user?.display_name }</p>
       <nav className="nav">
-        <Link to="/albums/saved">Saved Albums</Link> |{" "}
-        <Link to="/albums/saved/similar-artists">Similar Artists</Link> |{" "}
+        <Link to="/">Home</Link> |{" "}
+        <Link to="/albums">Saved Albums</Link> |{" "}
         <Link to="/logout">Logout</Link>
       </nav>
     </>

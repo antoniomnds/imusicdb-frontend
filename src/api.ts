@@ -5,9 +5,14 @@ export const API = {
         method: API_GET,
         endpoint: "users/me"
     }),
-    GetSavedAlbums: async (queryParams) => apiCall({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    GetSavedAlbums: async (queryParams: Record<string, any>) => apiCall({
         method: API_GET,
         endpoint: "albums/me",
         queryParams: queryParams
-    })
+    }),
+    GetAlbum: async (albumId: string) => apiCall({
+        method: API_GET,
+        endpoint: `albums/${albumId}`
+    }),
 }

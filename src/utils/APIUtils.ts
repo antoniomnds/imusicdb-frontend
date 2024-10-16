@@ -31,6 +31,7 @@ const API_STATUS = {
 
 interface GetFullUrlParams {
     endpoint: string;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     queryParams?: Record<string, any>;
     apiVersion?: typeof API_V1;
 }
@@ -38,15 +39,18 @@ interface GetFullUrlParams {
 interface ApiCallParams  {
     method: keyof typeof ACCEPTED_METHODS;
     endpoint: string;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     headers?: Record<string, any>;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     queryParams?: Record<string, any>;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     body?: Record<string, any>;
     apiVersion?: typeof API_V1;
 }
 
 interface ApiResponse {
-    data: string,
-    errors: string
+    data?: string,
+    errors?: string
     status: number
 }
 
@@ -127,15 +131,14 @@ const handleApiResponse = async (response: Response, endpoint: string) => {
         if (response.status === API_STATUS.UNAUTHORIZED) {
             removeCredentials();
         }
-        const responseJson: ApiResponse = await response.json();
-        const reason = responseJson ? responseJson.errors : response;
-        return { result: Promise.reject(reason), success: false }
+        const responseJson: ApiResponse = await response.json() as ApiResponse;
+        return { result: responseJson, success: false }
     }
     if (endpoint.includes('logout')) {
         removeCredentials();
     } else {
         persistCredentials(response);
     }
-    const responseJson: ApiResponse = await response.json();
+    const responseJson: ApiResponse = await response.json() as ApiResponse;
     return { result: responseJson, success: true };
 }

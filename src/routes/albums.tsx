@@ -1,41 +1,47 @@
 import {useCallback, useEffect, useState} from "react";
 import {API} from "../api";
-
-interface Album {
-  name: string,
-  album_type?: string,
-  total_tracks: number,
-  spotify_id?: string,
-  release_date: string,
-  label: string,
-  popularity?: number,
-}
+import {Link, Outlet} from "react-router-dom";
+import {Album} from "../types/album";
 
 function AlbumListing({ albums }: { albums: Album[]}) {
   return (
     <section>
-      <table>
+      <table style={{ borderCollapse: "collapse"}}>
         <thead>
-        <tr>
+        <tr style={{ borderBottom: "1px solid" }}>
           <th>Name</th>
+          <th>Artists</th>
           <th>Album Type</th>
           <th>Total Tracks</th>
           <th>Spotify ID</th>
           <th>Release Date</th>
           <th>Label</th>
+          <th>Genres</th>
           <th>Popularity</th>
+          <th></th>
         </tr>
         </thead>
         <tbody>
-        {albums.map((album) => (
-          <tr key={album.spotify_id}>
+        {albums.map((album: Album) => (
+          <tr key={album.id} style={{ borderBottom: "1px solid black" }}>
             <td>{album.name}</td>
+            <td>
+              {album.artists.map((artist) => (
+                <div key={artist.id}>{artist.name}</div>
+              ))}
+            </td>
             <td>{album.album_type}</td>
             <td>{album.total_tracks}</td>
             <td>{album.spotify_id}</td>
             <td>{album.release_date}</td>
             <td>{album.label}</td>
+            <td>
+              {album.genres.map((genre) => (
+                <span key={genre.id}>{genre.name}</span>
+              ))}
+            </td>
             <td>{album.popularity}</td>
+            <td><Link to={`/albums/${String(album.id)}`}>View</Link></td>
           </tr>
         ))}
         </tbody>
@@ -44,14 +50,16 @@ function AlbumListing({ albums }: { albums: Album[]}) {
   );
 }
 
-function SavedAlbums() {
+function Albums() {
   const [albums, setAlbums] = useState<Album[]>();
 
   const getSavedAlbums = useCallback(async (queryParams = {}) => {
     const response = await API.GetSavedAlbums(queryParams);
-    if (response.success) {
-      const albumData: Album = JSON.parse(response.result.data);
-      setAlbums(albumData);
+    if (response.success && response.result.data) {
+      const albumsData: Album[] = JSON.parse(response.result.data) as Album[];
+      setAlbums(albumsData);
+    } else {
+      alert(response.result.errors);
     }
   }, [])
 
@@ -71,12 +79,15 @@ function SavedAlbums() {
 
   return (
     <>
-      <h2>Saved Albums</h2>
-      {albums ? <AlbumListing albums={albums}/> : null}
-      <hr />
-      <button type="button" onClick={refreshSavedAlbums}>Refresh</button>
+      <main>
+        <h2>Saved Albums</h2>
+        {albums ? <AlbumListing albums={albums}/> : null}
+        <br />
+        <button type="button" onClick={refreshSavedAlbums}>Refresh</button>
+      </main>
+      <Outlet />
     </>
   );
 }
 
-export default SavedAlbums
+export default Albums
