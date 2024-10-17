@@ -1,9 +1,7 @@
-import {useCallback, useEffect, useState} from "react";
-import {API} from "../api";
-import {Link, Outlet} from "react-router-dom";
-import {Album} from "../types/album";
+import {Album} from "../../types/album.ts";
+import {Link} from "react-router-dom";
 
-function AlbumListing({ albums }: { albums: Album[]}) {
+export function Albums({ albums }: { albums: Album[]}) {
   return (
     <section>
       <table style={{ borderCollapse: "collapse"}}>
@@ -49,45 +47,3 @@ function AlbumListing({ albums }: { albums: Album[]}) {
     </section>
   );
 }
-
-function Albums() {
-  const [albums, setAlbums] = useState<Album[]>();
-
-  const getSavedAlbums = useCallback(async (queryParams = {}) => {
-    const response = await API.GetSavedAlbums(queryParams);
-    if (response.success && response.result.data) {
-      const albumsData: Album[] = JSON.parse(response.result.data) as Album[];
-      setAlbums(albumsData);
-    } else {
-      alert(response.result.errors);
-    }
-  }, [])
-
-  useEffect(() => {
-    getSavedAlbums()
-      .catch((err: unknown) => {
-        console.error(err);
-      })
-  }, [getSavedAlbums])
-
-  function refreshSavedAlbums() {
-    getSavedAlbums({refresh: true})
-      .catch((err: unknown) => {
-        console.error(err);
-      });
-  }
-
-  return (
-    <>
-      <main>
-        <h2>Saved Albums</h2>
-        {albums ? <AlbumListing albums={albums}/> : null}
-        <br />
-        <button type="button" onClick={refreshSavedAlbums}>Refresh</button>
-      </main>
-      <Outlet />
-    </>
-  );
-}
-
-export default Albums
