@@ -78,8 +78,8 @@ const getFullApiUrl = ({
     return fullUrl;
 }
 
-const getCredentials = () => {
-    return window.localStorage.getItem(AUTH_STORAGE_KEY);
+const getCredentials = (): string|null => {
+    return JSON.parse(window.localStorage.getItem(AUTH_STORAGE_KEY) ?? "") as string;
 }
 
 const removeCredentials = () => {
