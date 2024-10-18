@@ -1,58 +1,56 @@
 import {Album as AlbumProps} from "../../types/album.ts";
 import {Artist} from "../../types/artist.ts";
 import {Genre} from "../../types/genre.ts";
+import {SimilarAlbums} from "../similar-albums/similarAlbums.tsx";
+import Card from "@mui/material/Card";
+import {Button, CardActions, CardHeader, Typography} from "@mui/material";
+import CardContent from "@mui/material/CardContent";
 
 export function Album({album} : {album: AlbumProps}) {
   return (
-    <main style={{textAlign: "initial"}}>
-      <h2>Album</h2>
+    <main style={{textAlign: "initial", marginTop: "2rem"}}>
       <section>
-        <div>
-          <strong>Title: </strong>{album.name}
-        </div>
-        <div>
-          {album.artists.length ? (
-            <>
-              <strong>Artists: </strong>
-              <ul>{album.artists.map((artist: Artist) =>
-                (<li key={artist.id}>{artist.name}</li>))}
-              </ul>
-            </>
+        <Card sx={{maxWidth: 345}}>
+          <CardHeader
+            title={album.name}
+            subheader={album.artists.map((artist: Artist) => artist.name).join(", ")}
+          />
+          <CardContent>
+            <Typography variant="body2" sx={{color: 'text.secondary'}}>
+              Release date: {album.release_date}
+            </Typography>
+            <Typography variant="body2" sx={{color: 'text.secondary'}}>
+              {album.genres.length ? (
+                <>
+                  Genres: {album.genres.map((genre: Genre) => genre.name).join(", ")}
+                </>
+              ) : null}
+            </Typography>
+            <Typography variant="body2" sx={{color: 'text.secondary'}}>
+              Label: {album.label}
+            </Typography>
+            <Typography variant="body2" sx={{color: 'text.secondary'}}>
+              Tracks: {album.total_tracks}
+            </Typography>
+            <Typography variant="body2" sx={{color: 'text.secondary'}}>
+              Popularity: {album.popularity}
+            </Typography>
+          </CardContent>
+          {album.spotify_id ? (
+            <CardActions disableSpacing>
+              <Button
+                href={`https://open.spotify.com/album/${album.spotify_id}`}
+                target="_blank"
+                size="small"
+              >
+                Learn More
+              </Button>
+            </CardActions>
           ) : null}
-        </div>
-        <div>
-          <strong>Album type: </strong>{album.album_type}
-        </div>
-        <div>
-          <strong>Total tracks: </strong>{album.total_tracks}
-        </div>
-        <div>
-          <strong>Release date: </strong>{album.release_date}
-        </div>
-        <div>
-          <strong>Label: </strong>{album.label}
-        </div>
-        <div>
-          {album.genres.length ? (
-            <>
-              <strong>Genres: </strong>
-              <ul>{album.genres.map((genre: Genre) =>
-                (<li key={genre.id}>{genre.name}</li>))}
-              </ul>
-            </>
-          ) : null}
-        </div>
-        <div>
-          <strong>Popularity: </strong>{album.popularity}
-        </div>
-        {album.spotify_id ? (
-          <div>
-            <p>Check it on <a href={`https://open.spotify.com/album/${album.spotify_id}`}>Spotify!</a></p>
-          </div>
-        ) : null}
+        </Card>
       </section>
-      <section>
-
+      <section style={{marginTop: "4rem"}}>
+        <SimilarAlbums album={album}/>
       </section>
     </main>
   );
