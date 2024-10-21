@@ -79,7 +79,8 @@ const getFullApiUrl = ({
 }
 
 const getCredentials = (): string|null => {
-    return JSON.parse(window.localStorage.getItem(AUTH_STORAGE_KEY) ?? "") as string;
+    const access_token = window.localStorage.getItem(AUTH_STORAGE_KEY)
+    return access_token ? JSON.parse(access_token) as string : access_token;
 }
 
 const removeCredentials = () => {
@@ -89,7 +90,7 @@ const removeCredentials = () => {
 const persistCredentials = (response: Response) => {
     const authToken = response.headers.get(AUTH_TOKEN_HEADER);
     if (authToken) {
-        window.localStorage.setItem(AUTH_STORAGE_KEY, authToken);
+        window.localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(authToken.replace(/Bearer /, "")));
     }
 }
 export async function apiCall(
