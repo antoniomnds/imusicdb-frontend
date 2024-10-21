@@ -1,9 +1,10 @@
 import './App.css'
-import {useCallback, useEffect, useState} from "react";
-import spotifyLogo from "./assets/Spotify_Full_Logo_RGB_Green.png"
-import {Link, Outlet} from "react-router-dom";
-import { useLocalStorageState} from "./hooks/useLocalStorage";
+import {useCallback, useEffect, useMemo, useState} from "react";
+import {Outlet, useLocation, useNavigate} from "react-router-dom";
 import { API } from "./api.ts";
+import Nav from "./features/nav/nav.tsx";
+import Login from "./features/login/login.tsx";
+import { useLocalStorage } from 'usehooks-ts'
 
 interface User {
   display_name?: string,
@@ -11,21 +12,16 @@ interface User {
   spotify_id?: string
 }
 
-function getParameterFromFragment(param: string) {
-  const hash = window.location.hash;
-  const params = new URLSearchParams(hash.substring(1));
-  window.history.replaceState(null, null, window.location.pathname);
-  return params.get(param);
-}
-
-function Nav() {
+function Welcome() {
   const [user, setUser] = useState<User>();
 
   const getUserInfo = useCallback(async () => {
     const response = await API.GetUser();
-    if (response.success) {
-      const userData: User = JSON.parse(response.result.data);
+    if (response.success && response.result.data) {
+      const userData: User = JSON.parse(response.result.data) as User;
       setUser(userData);
+    } else {
+      alert(response.result.errors);
     }
   }, []);
 
@@ -38,44 +34,36 @@ function Nav() {
 
   return (
     <>
-      <p> Welcome, { user?.display_name }</p>
-      <nav className="nav">
-        <Link to="/albums/saved">Saved Albums</Link> |{" "}
-        <Link to="/albums/saved/similar-artists">Similar Artists</Link> |{" "}
-        <Link to="/logout">Logout</Link>
-      </nav>
+      <p>Welcome, {user?.display_name}</p>
+      <Outlet />
+      <Nav />
     </>
-  );
-}
 
-function Login() {
-  const base_url = import.meta.env.VITE_API_URL as string;
-  const request_auth_url = `${base_url}/api/v1/spotify_oauth/request_authorization`;
-
-  return (
-    <>
-      <h2>Welcome to your Personal Music Database</h2>
-      <a href={request_auth_url}>
-        Login with <img alt="Spotify Logo" src={spotifyLogo} height={25}/>
-      </a>
-    </>
   );
 }
 
 function App() {
-  const [token, setToken] = useLocalStorageState("access_token")
+  const [token, setToken] = useLocalStorage("access_token", "")
+
+  const location = useLocation();
+  const accessToken = useMemo(
+    () => location.hash.substring(1).replace("access_token=", ""),
+    [location.hash]
+  );
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const access_token: string|null = getParameterFromFragment("access_token")
-    if (access_token) {
-      setToken(access_token);
+    if (accessToken) {
+      setToken(accessToken);
+      navigate(location.pathname, {replace: true}); // clear the URL params
     }
-  })
+  }, [accessToken, setToken, navigate, location.pathname])
+
+  const hasAccessToken = token.length !== 0;
 
   return (
     <>
-      {token ? <Nav /> : <Login />}
-      <Outlet />
+      {hasAccessToken ? <Welcome /> : <Login />}
     </>
   );
 }

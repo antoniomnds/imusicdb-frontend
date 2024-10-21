@@ -1,4 +1,5 @@
 import queryString from "query-string";
+import isEmpty from "lodash/isEmpty";
 
 const AUTH_STORAGE_KEY = "access_token";
 
@@ -30,6 +31,7 @@ const API_STATUS = {
 
 interface GetFullUrlParams {
     endpoint: string;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     queryParams?: Record<string, any>;
     apiVersion?: typeof API_V1;
 }
@@ -37,15 +39,18 @@ interface GetFullUrlParams {
 interface ApiCallParams  {
     method: keyof typeof ACCEPTED_METHODS;
     endpoint: string;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     headers?: Record<string, any>;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     queryParams?: Record<string, any>;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     body?: Record<string, any>;
     apiVersion?: typeof API_V1;
 }
 
 interface ApiResponse {
-    data: string,
-    errors: string
+    data?: string,
+    errors?: string
     status: number
 }
 
@@ -54,9 +59,7 @@ const isAbsoluteUrl = (pathname: string) => {
     return isAbsoluteUrlRegex.test(pathname);
 }
 
-const isEmpty = (val: Record<string, unknown> | null | undefined) =>
-    val == null || !(Object.keys(val) || val).length;
-
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const stringifyQueryParams = (params: Record<string, any>) => queryString.stringify(params)
 const getFullApiUrl = ({
     endpoint,
@@ -75,8 +78,9 @@ const getFullApiUrl = ({
     return fullUrl;
 }
 
-const getCredentials = () => {
-    return window.localStorage.getItem(AUTH_STORAGE_KEY);
+const getCredentials = (): string|null => {
+    const access_token = window.localStorage.getItem(AUTH_STORAGE_KEY)
+    return access_token ? JSON.parse(access_token) as string : access_token;
 }
 
 const removeCredentials = () => {
@@ -86,7 +90,7 @@ const removeCredentials = () => {
 const persistCredentials = (response: Response) => {
     const authToken = response.headers.get(AUTH_TOKEN_HEADER);
     if (authToken) {
-        window.localStorage.setItem(AUTH_STORAGE_KEY, authToken);
+        window.localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(authToken.replace(/Bearer /, "")));
     }
 }
 export async function apiCall(
@@ -128,15 +132,14 @@ const handleApiResponse = async (response: Response, endpoint: string) => {
         if (response.status === API_STATUS.UNAUTHORIZED) {
             removeCredentials();
         }
-        const responseJson: ApiResponse = await response.json();
-        const reason = responseJson ? responseJson.errors : response;
-        return { result: Promise.reject(reason), success: false }
+        const responseJson: ApiResponse = await response.json() as ApiResponse;
+        return { result: responseJson, success: false }
     }
     if (endpoint.includes('logout')) {
         removeCredentials();
     } else {
         persistCredentials(response);
     }
-    const responseJson: ApiResponse = await response.json();
+    const responseJson: ApiResponse = await response.json() as ApiResponse;
     return { result: responseJson, success: true };
 }
